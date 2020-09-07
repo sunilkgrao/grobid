@@ -536,3 +536,22 @@ wrapper {
 }
 
 build.dependsOn project.getSubprojects().collect({ it.getTasks().getByName("build") })
+
+
+// Docker build
+
+task docker {
+    doFirst {
+        build {
+            test.enabled = false
+        }
+        project(":grobid-service") {
+            tasks.distZip.enabled = true
+        }
+    }
+
+
+    finalizedBy build
+}
+
+
