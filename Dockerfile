@@ -42,13 +42,23 @@ RUN ./gradlew clean assemble --no-daemon  --info --stacktrace
 # -------------------
 # build runtime image
 # -------------------
-FROM openjdk:8u212-jre-slim
+FROM alpine:3.7
 
-RUN apt-get update && \
-    apt-get -y --no-install-recommends install libxml2 unzip
+RUN apk add --update \
+    python3 \
+    python3-dev \
+    py-pip \
+    build-base \
+    openjdk8-jre \
+    libxml2 \
+    unzip \
+    git \
+  && pip install virtualenv \
+  && rm -rf /var/cache/apk/*
 
 WORKDIR /opt
 
+## Java
 COPY --from=builder /opt/grobid-source/grobid-core/build/libs/grobid-core-*-onejar.jar ./grobid/grobid-core-onejar.jar
 COPY --from=builder /opt/grobid-source/grobid-service/build/distributions/grobid-service-*.zip ./grobid-service.zip
 COPY --from=builder /opt/grobid-source/grobid-home/build/distributions/grobid-home-*.zip ./grobid-home.zip
@@ -63,6 +73,11 @@ RUN rm *.zip
 
 # below to allow logs to be written in the container
 # RUN mkdir -p logs
+
+WORKDIR /opt
+RUN git clone https://github.com/kermitt2/delft delft
+#RUN virtualenv create
+
 
 VOLUME ["/opt/grobid/grobid-home/tmp"]
 
