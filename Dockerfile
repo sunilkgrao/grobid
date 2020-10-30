@@ -56,6 +56,8 @@ RUN apk add --update \
   && pip install virtualenv \
   && rm -rf /var/cache/apk/*
 
+RUN pip install --upgrade pip
+
 WORKDIR /opt
 
 ## Java
@@ -76,7 +78,12 @@ RUN rm *.zip
 
 WORKDIR /opt
 RUN git clone https://github.com/kermitt2/delft delft
-#RUN virtualenv create
+RUN virtualenv -p python3 env
+RUN source env/bin/activate
+RUN which pip
+
+WORKDIR /opt/delft
+RUN pip3 install -r requirements.txt
 
 
 VOLUME ["/opt/grobid/grobid-home/tmp"]
