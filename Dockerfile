@@ -35,6 +35,7 @@ COPY grobid-home/ ./grobid-home/
 COPY grobid-core/ ./grobid-core/
 COPY grobid-service/ ./grobid-service/
 COPY grobid-trainer/ ./grobid-trainer/
+COPY requirements.cpu.txt ./
 
 RUN ./gradlew clean assemble --no-daemon  --info --stacktrace
 
@@ -42,23 +43,32 @@ RUN ./gradlew clean assemble --no-daemon  --info --stacktrace
 # -------------------
 # build runtime image
 # -------------------
-FROM alpine:3.7
+FROM continuumio/anaconda3
 
-RUN apk add --update \
-    python3 \
-    python3-dev \
-    py-pip \
-    build-base \
-    openjdk8-jre \
-    libxml2 \
-    unzip \
-    git \
-  && pip install virtualenv \
-  && rm -rf /var/cache/apk/*
+RUN apt-get update && \
+    apt-get -y install libxml2 unzip
 
-RUN pip install --upgrade pip
+# Build stuff
+RUN apt-get -y install build-essential libatlas-base-dev gfortran libopenblas-dev liblapack-dev libpng-dev freetype* libblas-dev
+
+#Python stuff
+RUN apt-get -y install python3 python3-pip python3-dev python3-numpy python3-scipy
+
+# SetUp python
+RUN pip3 install virtualenv setuptools wheel
+RUN conda create -n env python=3.7 pip numpy
+RUN /bin/bash -c 'conda init'
+RUN /bin/bash -c 'conda activate env'
+RUN which pip3
 
 WORKDIR /opt
+COPY --from=builder /opt/grobid-source/requirements.cpu.txt /opt
+RUN pip3 install -r requirements.cpu.txt
+RUN git clone https://github.com/kermitt2/delft delft
+
+WORKDIR /opt/delft
+RUN ln -s /usr/include/locale.h /usr/include/xlocale.h
+#RUN pip3 install -r requirements.txt
 
 ## Java
 COPY --from=builder /opt/grobid-source/grobid-core/build/libs/grobid-core-*-onejar.jar ./grobid/grobid-core-onejar.jar
@@ -75,16 +85,6 @@ RUN rm *.zip
 
 # below to allow logs to be written in the container
 # RUN mkdir -p logs
-
-WORKDIR /opt
-RUN git clone https://github.com/kermitt2/delft delft
-RUN virtualenv -p python3 env
-RUN source env/bin/activate
-RUN which pip
-
-WORKDIR /opt/delft
-RUN pip3 install -r requirements.txt
-
 
 VOLUME ["/opt/grobid/grobid-home/tmp"]
 
