@@ -45,6 +45,9 @@ public class DummyTrainer implements GenericTrainer {
 
     @Override
     public void setNbMaxIterations(int iterations) {
+    }
 
+    @Override
+    public void setAlgorithm(String algorithm) {
     }
 }

@@ -49,6 +49,7 @@ public abstract class AbstractTrainer implements Trainer {
     protected double epsilon = 0.0; // size of the interval for stopping criterion
     protected int window = 0; // similar to CRF++
     protected int nbMaxIterations = 0; // maximum number of iterations in training
+    protected String algorithm = ""; // algorithm
 
     protected GrobidModel model;
     private File trainDataPath;
@@ -93,6 +94,9 @@ public abstract class AbstractTrainer implements Trainer {
             trainer.setWindow(window);
         if (nbMaxIterations != 0)
             trainer.setNbMaxIterations(nbMaxIterations);
+
+        if (StringUtils.isNotBlank(algorithm))
+            trainer.setAlgorithm(algorithm);
 
         File dirModelPath = new File(GrobidProperties.getModelPath(model).getAbsolutePath()).getParentFile();
         if (!dirModelPath.exists()) {
@@ -151,6 +155,8 @@ public abstract class AbstractTrainer implements Trainer {
             trainer.setWindow(window);
         if (nbMaxIterations != 0)
             trainer.setNbMaxIterations(nbMaxIterations);
+        if (StringUtils.isNotBlank(algorithm))
+            trainer.setAlgorithm(algorithm);
 
         File dirModelPath = new File(GrobidProperties.getModelPath(model).getAbsolutePath()).getParentFile();
         if (!dirModelPath.exists()) {
@@ -197,6 +203,8 @@ public abstract class AbstractTrainer implements Trainer {
             trainer.setWindow(window);
         if (nbMaxIterations != 0)
             trainer.setNbMaxIterations(nbMaxIterations);
+        if (StringUtils.isNotBlank(algorithm))
+            trainer.setAlgorithm(algorithm);
 
         //We dump the model in the tmp directory
         File tmpDirectory = new File(GrobidProperties.getTempPath().getAbsolutePath());

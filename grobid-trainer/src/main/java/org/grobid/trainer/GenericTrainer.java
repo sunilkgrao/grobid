@@ -11,10 +11,11 @@ import java.io.File;
 public interface GenericTrainer {
     void train(File template, File trainingData, File outputModel, int numThreads, GrobidModel model);
     String getName();
-	public void setEpsilon(double epsilon);
-	public void setWindow(int window);
-	public double getEpsilon();
-	public int getWindow();
-	public int getNbMaxIterations();
-	public void setNbMaxIterations(int iterations);
+	void setEpsilon(double epsilon);
+	void setWindow(int window);
+	double getEpsilon();
+	int getWindow();
+	int getNbMaxIterations();
+	void setNbMaxIterations(int iterations);
+    void setAlgorithm(String algorithm);
 }

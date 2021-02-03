@@ -20,6 +20,8 @@ public class WapitiTrainer implements GenericTrainer {
 	protected double epsilon = 0.00001; // default size of the interval for stopping criterion
 	protected int window = 20; // default similar to CRF++
     protected int nbMaxIterations = 2000; // by default maximum of training iterations
+    protected String algorithm = "l-bfgs"; // algorithm to be used, values: l-bfgs (default), sgd-l1, bcd, rprop, rprop+, rprop-
+
 
     @Override
     public void train(File template, File trainingData, File outputModel, int numThreads, GrobidModel model) {
@@ -27,8 +29,10 @@ public class WapitiTrainer implements GenericTrainer {
 		System.out.println("\twindow: " + window);
         System.out.println("\tnb max iterations: " + nbMaxIterations);
 		System.out.println("\tnb threads: " + numThreads);
+		System.out.println("\talgorithm: " + algorithm);
+
         WapitiModel.train(template, trainingData, outputModel, "--nthread " + numThreads +
-//       		" --algo sgd-l1" +
+       		" --algo " + algorithm +
 			" -e " + BigDecimal.valueOf(epsilon).toPlainString() +
 			" -w " + window +
 			" -i " + nbMaxIterations
@@ -64,7 +68,12 @@ public class WapitiTrainer implements GenericTrainer {
     public void setNbMaxIterations(int interations) {
         this.nbMaxIterations = interations;
     }
-    
+
+    @Override
+    public void setAlgorithm(String algorithm) {
+        this.algorithm = algorithm;
+    }
+
     @Override
     public int getNbMaxIterations() {
         return nbMaxIterations;

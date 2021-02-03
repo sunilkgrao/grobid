@@ -26,6 +26,7 @@ public class CRFPPGenericTrainer implements GenericTrainer {
 	protected double epsilon = 0.00001; // default size of the interval for stopping criterion
 	protected int window = 20; // default similar to CRF++
     protected int nbMaxIterations = 6000;
+    protected String algorithm = "crf-l2";
 
     public CRFPPGenericTrainer() {
         crfppTrainer = new CRFPPTrainer();
@@ -70,7 +71,12 @@ public class CRFPPGenericTrainer implements GenericTrainer {
     public void setNbMaxIterations(int interations) {
         this.nbMaxIterations = interations;
     }
-    
+
+    @Override
+    public void setAlgorithm(String algorithm) {
+        this.algorithm = algorithm;
+    }
+
     @Override
     public int getNbMaxIterations() {
         return nbMaxIterations;
