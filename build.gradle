@@ -245,7 +245,7 @@ project("grobid-core") {
 
         implementation "joda-time:joda-time:2.9.9"
         implementation "org.apache.lucene:lucene-analyzers-common:4.5.1"
-        implementation 'black.ninia:jep:3.8.2'
+        implementation 'black.ninia:jep:3.9.1'
         implementation 'org.apache.opennlp:opennlp-tools:1.9.1'
         implementation group: 'org.jruby', name: 'jruby-complete', version: '9.2.13.0'
 
@@ -302,6 +302,7 @@ project("grobid-home") {
         from('.') {
             include("config/*")
             include("language-detection/**")
+            include("sentence-segmentation/**")
             include("lib/**")
             include("pdf2xml/**")
             include("models/**")
@@ -330,7 +331,7 @@ project(":grobid-service") {
         all*.exclude group: 'log4j', module: "log4j"
     }
 
-    tasks.distZip.enabled = false
+    tasks.distZip.enabled = true
     tasks.distTar.enabled = false
     tasks.shadowDistZip.enabled = false
     tasks.shadowDistTar.enabled = false
@@ -397,6 +398,13 @@ project(":grobid-trainer") {
         }
         implementation project(':grobid-core')
         implementation "com.rockymadden.stringmetric:stringmetric-core_2.10:0.27.3"
+        implementation "me.tongfei:progressbar:0.9.0"
+    }
+
+    configurations {
+        all*.exclude group: 'org.slf4j', module: "slf4j-jdk14"
+        all*.exclude group: 'org.slf4j', module: "slf4j-log4j12"
+        //all*.exclude group: 'log4j', module: "log4j"
     }
 
     jar {
